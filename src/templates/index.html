@@ -1,0 +1,287 @@
+{% extends "bootstrap/base.html" %}
+{% block head %}
+<head>
+   <!-- meta tags not used in this project -->
+   <meta charset="utf-8">
+   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+   <meta name="description" content="">
+   <meta name="author" content="">
+   <!-- Page title -->
+   <title>Resume Match: resume-match.com</title>
+   <!-- Latest compiled and minified CSS -->
+   <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.js"></script>
+   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+   <!-- Optional theme -->
+   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css" integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous">
+   <!-- Latest compiled and minified JavaScript -->
+   <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+   <!-- favicon is in static folder; href points to a "variable" defined by curly braces. -->
+   <link rel="icon" href="{{ url_for('static', filename='favicon.ico') }}">
+   <!-- Custom styles in main.css -->
+   <!-- main.css is in static folder; href points to a "variable" defined by curly braces. -->
+   <link href="{{ url_for('static', filename='css/main.css') }}" rel="stylesheet">
+   <link href="{{ url_for('static', filename='css/bootstrap.min.css') }}" rel="stylesheet">
+   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" />
+   <link href="{{ url_for('static', filename='css/jquery-3.3.1.min.js') }}" rel="stylesheet">
+   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
+   <link href="https://gitcdn.github.io/bootstrap-toggle/2.2.2/css/bootstrap-toggle.min.css" rel="stylesheet">
+   <script src="https://gitcdn.github.io/bootstrap-toggle/2.2.2/js/bootstrap-toggle.min.js"></script>
+   <script>
+      function clearResumeText() {
+      var x = document.getElementById("resume_text");
+      if (x.innerHTML === " ") {
+       x.innerHTML = " ";
+      } else {
+       x.innerHTML = " ";
+      }
+      }
+
+      function clearResumePred() {
+      var x = document.getElementById("resume_prediction");
+      if (x.innerHTML === " ") {
+      x.innerHTML = " ";
+      } else {
+      x.innerHTML = " ";
+      }
+      }
+         $(document).ready(function(){
+             $("#button").click(function(e){
+               console.log("click!")
+               e.preventDefault();
+                 $.ajax({
+                   data: new FormData($('#upload')[0]),
+                   type : 'POST',
+                   url : '/upload_resume',
+                   cache: false,
+                   processData: false,
+                   contentType: false,
+                   success: function(d){
+                     $("#resume_text").html(d.resume_text);
+                   }
+               });
+             });
+         });
+         $(document).ready(function(){
+           $("#sel_res_btn").click(function(e){
+             e.preventDefault();
+             var chosen_resume = $( "#sel_res_id" ).serializeArray();
+             console.log('str:', chosen_resume );
+                 $.ajax({
+                   type : 'POST',
+                   data: chosen_resume,
+                   url : '/demo_resumes',
+                   success: function(d){
+                     $("#resume_text").html(d.resume_text);
+                     console.log('d.resume_text: ', d.resume_text);
+                     console.log('demo started');
+                 }
+               })
+             });
+         });
+         $(document).ready(function(){
+             $("#res_pred_btn").click(function(e){
+                 e.preventDefault();
+                 $.ajax({
+                   type : 'GET',
+                   url : '/predict',
+                   success: function(data){
+                     console.log('the data:',  data)
+                     $("#resume_prediction").html(data.resume_prediction);
+                 }
+               })
+             });
+         });
+         $(function () {
+            $('[data-toggle="popover"]').popover()
+            })
+   </script>
+</head>
+{% endblock %}
+{% block content %}
+<div class="container">
+   </br>
+   <div class="page-header">
+      <div class="container">
+         <div class="">
+            <a href="/demo" style="text-decoration:none">
+               <div id="jumbo_top" class="jumbotron " style="overflow-x:scroll; overflow-y:scroll; white-space: nowrap;">
+                  <h1>Resume Match</h1>
+                  <h1><small>Match Resumes to Jobs with Machine Learning</small></h1>
+               </div>
+            </a>
+         </div>
+         <div class="">
+            <div class="row">
+               <div class="col-sm-6">
+                  <div id="jumbo_upload" class="jumbotron" style="overflow-x:scroll; overflow-y:scroll; white-space: nowrap;">
+                     <h2>Upload Resume <button type="button" class="btn btn-sm btn-secondary" data-toggle="popover" title="Upload Disabled" data-content="Upload has been disabled to ensure a good user experience.  Click on the Demo button to explore the site."><i>i</i></button></h2>
+                     <form id="upload" name="form_upload" enctype="multipart/form-data" method="post" action="/uploadcsv">
+                        <div class="col">
+                           <input type="file" name="data_file">
+                           <button id="btn_upload" type="submit" class="btn btn-lg btn-primary" disabled >Upload</button>
+                        </div>
+                     </form>
+                  </div>
+               </div>
+               <div class="col-sm-6">
+                  <div id="jumbo_upload" class="jumbotron" style="overflow-x:scroll; white-space: nowrap;">
+                     <h2>Select Demo Resume <button type="button" class="btn btn-sm btn-secondary" data-toggle="popover" title="Click Demo" data-content="The upload function has been disabled - click on the Demo button to start."><i>i</i></button></h2>
+                     <div>
+                        <form id="sel_res_form"  name="demo_form" action="/demo_resumes">
+                           <div >
+                              <select id="sel_res_id" name="sel_res_dropdown" class="btn btn-outline-secondary">
+                                 <option value="">Select Resume</option>
+                                 <option value="mkt">Marketing Manager</option>
+                                 <option value="dta">Data Scientist</option>
+                                 <option value="web">Web Developer</option>
+                                 <option value="hcv">Howard Vickers</option>
+                              </select>
+                              </br>
+                              <button onclick="clearResumeText(); clearResumePred()" id="sel_res_btn" type="submit" class="btn btn-lg btn-primary">Demo</button>
+                              </br>
+                           </div>
+                        </form>
+                     </div>
+                  </div>
+               </div>
+            </div>
+            <div class="">
+               <div id="jumbo_top" class="jumbotron" style="overflow-x:scroll; overflow-y:scroll; white-space: nowrap;">
+                  <h2>Resume Text <button type="button" class="btn btn-sm btn-secondary" data-toggle="popover" title="Raw Text from Resume" data-content="The below text has been extracted from the uploaded pdf."><i>i</i></button></h2>
+                  <div class="">
+                     <div id="resume_text">
+                     </div>
+                  </div>
+               </div>
+            </div>
+            <div class="">
+               <div id="jumbo_top" class="jumbotron" style="overflow-x:scroll; overflow-y:scroll; white-space: nowrap;">
+                  <h2>Resume Classification <button type="button" class="btn btn-sm btn-secondary" data-toggle="popover" title="Raw Text from Resume" data-content="The below text has been extracted from the uploaded pdf."><i>i</i></button></h2>
+                  <div class="">
+                     <form action="/predict">
+                        <button id="res_pred_btn" type="submit" class="btn btn-lg btn-primary">Predict</button>
+                     </form>
+                     </br>
+                  </div>
+                  <div id="resume_prediction">
+                     </br>
+                  </div>
+                  <div>
+                  </div>
+               </div>
+            </div>
+            <div class="">
+               <div id="jumbo" class="jumbotron" style="overflow-x:scroll">
+                  <h2>About </h2>
+                  <div class="myText">
+                     This website is a personal project to demonstrate how machine learning can be used to match resumes with job descriptions.
+                     </br>
+                     </br>
+                     For example, imagine sales numbers not just being shared as tables and charts of historic data, but as an interactive tool, where different teams could explore a more predictive analysis.
+                     This could enable more in-depth discussions about the factors driving sales and how best to predict future performance (beyond just drawing a straight line on an excel chart!)</small></small>
+                     </br>
+                     </br>
+                     This site allows users to upload a csv file (see <i>Demo Only</i> section below) and use point-n-click skills to carry out data manipulation normally done in python code (especially Numpy and Pandas).</small></small>
+                     <ul>
+                        <li>Select variables (columns) to analyze</li>
+                        <li>Identify the variables (columns) that offer the most predictive power</li>
+                        <li>Rename columns for more meaningful labels</li>
+                        <li>Run and compare several regression analyses (including Linear Regression, Random Forest, K Neighbors)</li>
+                     </ul>
+                  </div>
+               </div>
+            </div>
+            <div class="">
+               <div id="jumbo" class="jumbotron" style="overflow-x:scroll">
+                  <h2>Project Limitations </h2>
+                  <div class="myText">
+                     I should also mention that this project is not (nor intended to be) a commercial or complete product.  Nor is it a new concept.  Instead, it is an exploration of how some aspects of a data scientist's work can be shared with other teams. And above all, a project to showcase my unique skillset of data science, web dev and business.</small></p>
+                     </br>
+                     If this project were to be taken further, then the following functionality would need to be added:
+                     <ul>
+                        <li>Algorithm tuning: hyperperameters could be adjusted (eg via dropdowns/checkboxes) to optimzie the models</li>
+                        <li>Predictive analysis: uploading unlabeled data to predict the dependent variable</li>
+                        <li>More robust functionality: see <i>Demo Only</i> section below</li>
+                     </ul>
+                  </div>
+                  </br>
+                  </br>
+                  <h2>Demo Only </h2>
+                  <div class="myText">
+                     Although this site is designed to upload data (as csv files), I have disabled this function and it can only be used in demo mode.
+                     </br>
+                     </br>
+                     Demo mode allows me to ensure that the concept is showcased without the site crashing.  This allows me to demonstrate the concept and move onto another project for my profile.
+                     </br>
+                     </br>
+                     If this were to be used in a real-world setting, then certain issues would need to be addressed.  They are not insurmountable, but do require coding time that I would prefer to put to another project.  The following issues are some examples:
+                     <ul>
+                        <li>NaNs</li>
+                        <li>Multiple headers</li>
+                        <li>ASCII encodings</li>
+                        <li>Large file sizes</li>
+                        <li>Non-csv files</li>
+                     </ul>
+                     Instead, it is an exploration of how some aspects of a data scientist's work can be shared with other teams. And above all, a project to showcase my unique skillset of data science, web dev and business.</small></p>
+                  </div>
+                  </br>
+                  <h2>Motivation </h2>
+                  <div class="myText">
+                     It is a reflection of how I combine the following skills:
+                     <ul>
+                        <li>Data Science - applying machine learning algorithms to business problems</li>
+                        <li>Web Development - presenting data and creating an interface for analytical tools </li>
+                        <li>Business Management - data-driven approaches to sales/marketing/finance/operations</li>
+                     </ul>
+                     Click on the LinkedIn logo below to learn more about how I combine a range of tech and business skills with startups.
+                  </div>
+               </div>
+            </div>
+            <div class="">
+               <div id="jumbo" class="jumbotron" style="overflow-x:scroll; overflow-y:scroll; white-space: nowrap;">
+                  <h2>Stack and Technologies </h2>
+                  <div class="myText">
+                     Frontend:
+                     <ul>
+                        <li>JavaScript</li>
+                        <li>JQuery</li>
+                        <li>Bootstrap</li>
+                        <li>HTML</li>
+                        <li>CSS</li>
+                     </ul>
+                     Backend:
+                     <ul>
+                        <li>Python</li>
+                        <li>Flask</li>
+                        <li>Jinja2</li>
+                        <li>AWS (EC2, 53 Route)</li>
+                     </ul>
+                     Model building and data-visualizations:
+                     <ul>
+                        <li>Numpy</li>
+                        <li>Pandas</li>
+                        <li>Matplotlib</li>
+                        <li>SK-Learn</li>
+                        <li>StatsModels</li>
+                     </ul>
+                     </br>
+                     Click on the GitHub logo below to explore the code.
+                  </div>
+               </div>
+            </div>
+         </div>
+      </div>
+   </div>
+</div>
+</div>
+<footer class="footer">
+   <div class="container" align="center">
+      <a href="https://github.com/howardvickers/resume-match" class="btn btn-social-icon btn-github btn-small"><i class="fa fa-github fa-3x"></i></a>
+      <a href="https://linkedin.com/in/howardvickers/" class="btn btn-social-icon btn-linkedin btn-small"><i class="fa fa-linkedin fa-3x"></i></a>
+      </p>
+   </div>
+</footer>
+{% endblock %}
+{% block scripts %}
+{{super()}}
+{% endblock %}
