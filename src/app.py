@@ -83,6 +83,14 @@ def index():
     # Load page
     return flask.render_template('index.html')
 
+
+
+@app.route('/newlook')
+def newlook():
+    # Load page
+    return flask.render_template('newlook.html')
+
+
 @app.route('/upload_resume', methods=["POST"])
 def upload_resume():
     # Accept uploaded resume and return raw text
@@ -99,7 +107,7 @@ def upload_resume():
 @app.route('/demo_resumes', methods=["POST"])
 def demo_resumes():
     # Accept selected demo resume and return raw text
-    resumes_dict = {'mkt': 'marketing', 'dta': 'data', 'web': 'webdev', 'hcv': 'howardvickers'}
+    resumes_dict = {'mkt': 'marketing', 'dta': 'data', 'web': 'webdev', 'sls': 'sales', 'act': 'accountant'}
     print('request.form: ', request.form)
     for k, v in request.form.items():
         selected_resume = request.form[k]
@@ -107,17 +115,21 @@ def demo_resumes():
     resume_pdf = "../data/resumes/{}_resume.pdf".format(resumes_dict[selected_resume])
 
     resume_text = ocr_on_pdf(resume_pdf)
-    global_resume.text = resume_text
+    # global_resume.text = resume_text
+    prediction_dict = {'JavaScript': 'Web Developer', 'Python': 'Data Scientist', 'Marketing': 'Marketing Manager', 'Sales': 'Sales Manager', 'Accounting': 'Accountant', 'Operations': 'Operations Manager'}
+    resume_prediction = prediction_dict[predict_resume(resume_text)]
+    return flask.jsonify(
+                        resume_text = build_resume_html(resume_text),
+                        resume_prediction = '<h3>'+resume_prediction+'</h3>'
+                        )
 
-    return flask.jsonify(resume_text = build_resume_html(resume_text))
-
-@app.route('/predict', methods=["GET"])
-def predict():
-    # Run predict function and return prediction
-    resume_text = global_resume.text
-    resume_prediction = predict_resume(resume_text)
-
-    return flask.jsonify(resume_prediction = '<h3>'+resume_prediction+'</h3>')
+# @app.route('/predict', methods=["GET"])
+# def predict():
+#     # Run predict function and return prediction
+#     resume_text = global_resume.text
+#     resume_prediction = predict_resume(resume_text)
+#
+#     return flask.jsonify(resume_prediction = '<h3>'+resume_prediction+'</h3>')
 
 
 if __name__ == "__main__":

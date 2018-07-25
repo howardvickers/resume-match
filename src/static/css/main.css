@@ -1,3 +1,25 @@
+.card-img-top {
+-moz-transition: all 0.3s;
+-webkit-transition: all 0.3s;
+transition: all 0.3s;
+}
+
+.card-img-top:hover {
+-webkit-transform: scale(.8);
+-moz-transform: scale(.8);
+-o-transform: scale(.8);
+-ms-transform: scale(.8);
+transform: scale(.8);
+}
+
+.backgroundIm {
+    background-image: url("../img/background4.png");
+    background-size: cover;
+    left: 0px;
+    right: 0px;
+    width: 100%;
+    height: 400px;
+}
 .i
 {
   margin: 150px 300px

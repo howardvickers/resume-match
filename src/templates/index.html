@@ -1,12 +1,6 @@
 {% extends "bootstrap/base.html" %}
 {% block head %}
 <head>
-   <!-- meta tags not used in this project -->
-   <meta charset="utf-8">
-   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-   <meta name="description" content="">
-   <meta name="author" content="">
-   <!-- Page title -->
    <title>Resume Match: resume-match.com</title>
    <!-- Latest compiled and minified CSS -->
    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.js"></script>
@@ -26,7 +20,9 @@
    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
    <link href="https://gitcdn.github.io/bootstrap-toggle/2.2.2/css/bootstrap-toggle.min.css" rel="stylesheet">
    <script src="https://gitcdn.github.io/bootstrap-toggle/2.2.2/js/bootstrap-toggle.min.js"></script>
-   <script>
+
+
+<script>
       function clearResumeText() {
       var x = document.getElementById("resume_text");
       if (x.innerHTML === " ") {
@@ -44,6 +40,25 @@
       x.innerHTML = " ";
       }
       }
+
+      function sendData(data) {
+        console.log('data: ', data);
+          $.ajax({
+            type : 'POST',
+            data: data,
+            url : '/demo_resumes',
+            success: function(d){
+              $("#resume_text").html(d.resume_text);
+              $("#resume_prediction").html(d.resume_prediction);
+
+              console.log('d.resume_text: ', d.resume_text);
+              console.log('d.resume_prediction: ', d.resume_prediction);
+              console.log('demo started');
+          }
+        })
+      }
+
+
          $(document).ready(function(){
              $("#button").click(function(e){
                console.log("click!")
@@ -61,6 +76,13 @@
                });
              });
          });
+
+
+
+
+
+
+
          $(document).ready(function(){
            $("#sel_res_btn").click(function(e){
              e.preventDefault();
@@ -79,7 +101,9 @@
              });
          });
          $(document).ready(function(){
+
              $("#res_pred_btn").click(function(e){
+               console.log("res_pred_btn clicked!");
                  e.preventDefault();
                  $.ajax({
                    type : 'GET',
@@ -98,189 +122,150 @@
 </head>
 {% endblock %}
 {% block content %}
-<div class="container">
-   </br>
-   <div class="page-header">
-      <div class="container">
-         <div class="">
-            <a href="/demo" style="text-decoration:none">
-               <div id="jumbo_top" class="jumbotron " style="overflow-x:scroll; overflow-y:scroll; white-space: nowrap;">
-                  <h1>Resume Match</h1>
-                  <h1><small>Match Resumes to Jobs with Machine Learning</small></h1>
+<body>
+   <div class="jumbotron backgroundIm">
+      <div>
+      </div>
+   </div>
+   <div class="container">
+      <h1 class="display-3 text-center">Get matched with the perfect job!</h1>
+      <h4 class="text-center">Upload your resume and find the right job title using OCR and Machine Learning </h4>
+      </br>
+      </br>
+   </div>
+   <div class="container">
+      <div class="row">
+         <div class="col-12">
+            <h3 class="card-title">Upload Your Resume</h3>
+            <form id="upload" name="form_upload" enctype="multipart/form-data" method="post" action="/uploadcsv">
+               <div class="col">
+                  <input type="file" name="data_file">
+                  <button id="btn_upload" type="submit" class="btn btn-lg btn-primary" disabled >Upload</button>
                </div>
-            </a>
+            </form>
+            </br>
+            </br>
          </div>
-         <div class="">
-            <div class="row">
-               <div class="col-sm-6">
-                  <div id="jumbo_upload" class="jumbotron" style="overflow-x:scroll; overflow-y:scroll; white-space: nowrap;">
-                     <h2>Upload Resume <button type="button" class="btn btn-sm btn-secondary" data-toggle="popover" title="Upload Disabled" data-content="Upload has been disabled to ensure a good user experience.  Click on the Demo button to explore the site."><i>i</i></button></h2>
-                     <form id="upload" name="form_upload" enctype="multipart/form-data" method="post" action="/uploadcsv">
-                        <div class="col">
-                           <input type="file" name="data_file">
-                           <button id="btn_upload" type="submit" class="btn btn-lg btn-primary" disabled >Upload</button>
-                        </div>
-                     </form>
-                  </div>
-               </div>
-               <div class="col-sm-6">
-                  <div id="jumbo_upload" class="jumbotron" style="overflow-x:scroll; white-space: nowrap;">
-                     <h2>Select Demo Resume <button type="button" class="btn btn-sm btn-secondary" data-toggle="popover" title="Click Demo" data-content="The upload function has been disabled - click on the Demo button to start."><i>i</i></button></h2>
-                     <div>
-                        <form id="sel_res_form"  name="demo_form" action="/demo_resumes">
-                           <div >
-                              <select id="sel_res_id" name="sel_res_dropdown" class="btn btn-outline-secondary">
-                                 <option value="">Select Resume</option>
-                                 <option value="mkt">Marketing Manager</option>
-                                 <option value="dta">Data Scientist</option>
-                                 <option value="web">Web Developer</option>
-                                 <option value="hcv">Howard Vickers</option>
-                              </select>
-                              </br>
-                              <button onclick="clearResumeText(); clearResumePred()" id="sel_res_btn" type="submit" class="btn btn-lg btn-primary">Demo</button>
-                              </br>
-                           </div>
-                        </form>
-                     </div>
-                  </div>
-               </div>
-            </div>
-            <div class="">
-               <div id="jumbo_top" class="jumbotron" style="overflow-x:scroll; overflow-y:scroll; white-space: nowrap;">
-                  <h2>Resume Text <button type="button" class="btn btn-sm btn-secondary" data-toggle="popover" title="Raw Text from Resume" data-content="The below text has been extracted from the uploaded pdf."><i>i</i></button></h2>
-                  <div class="">
-                     <div id="resume_text">
-                     </div>
-                  </div>
-               </div>
-            </div>
-            <div class="">
-               <div id="jumbo_top" class="jumbotron" style="overflow-x:scroll; overflow-y:scroll; white-space: nowrap;">
-                  <h2>Resume Classification <button type="button" class="btn btn-sm btn-secondary" data-toggle="popover" title="Raw Text from Resume" data-content="The below text has been extracted from the uploaded pdf."><i>i</i></button></h2>
-                  <div class="">
-                     <form action="/predict">
-                        <button id="res_pred_btn" type="submit" class="btn btn-lg btn-primary">Predict</button>
-                     </form>
-                     </br>
-                  </div>
-                  <div id="resume_prediction">
-                     </br>
-                  </div>
-                  <div>
-                  </div>
-               </div>
-            </div>
-            <div class="">
-               <div id="jumbo" class="jumbotron" style="overflow-x:scroll">
-                  <h2>About </h2>
-                  <div class="myText">
-                     This website is a personal project to demonstrate how machine learning can be used to match resumes with job descriptions.
-                     </br>
-                     </br>
-                     For example, imagine sales numbers not just being shared as tables and charts of historic data, but as an interactive tool, where different teams could explore a more predictive analysis.
-                     This could enable more in-depth discussions about the factors driving sales and how best to predict future performance (beyond just drawing a straight line on an excel chart!)</small></small>
-                     </br>
-                     </br>
-                     This site allows users to upload a csv file (see <i>Demo Only</i> section below) and use point-n-click skills to carry out data manipulation normally done in python code (especially Numpy and Pandas).</small></small>
-                     <ul>
-                        <li>Select variables (columns) to analyze</li>
-                        <li>Identify the variables (columns) that offer the most predictive power</li>
-                        <li>Rename columns for more meaningful labels</li>
-                        <li>Run and compare several regression analyses (including Linear Regression, Random Forest, K Neighbors)</li>
-                     </ul>
-                  </div>
-               </div>
-            </div>
-            <div class="">
-               <div id="jumbo" class="jumbotron" style="overflow-x:scroll">
-                  <h2>Project Limitations </h2>
-                  <div class="myText">
-                     I should also mention that this project is not (nor intended to be) a commercial or complete product.  Nor is it a new concept.  Instead, it is an exploration of how some aspects of a data scientist's work can be shared with other teams. And above all, a project to showcase my unique skillset of data science, web dev and business.</small></p>
-                     </br>
-                     If this project were to be taken further, then the following functionality would need to be added:
-                     <ul>
-                        <li>Algorithm tuning: hyperperameters could be adjusted (eg via dropdowns/checkboxes) to optimzie the models</li>
-                        <li>Predictive analysis: uploading unlabeled data to predict the dependent variable</li>
-                        <li>More robust functionality: see <i>Demo Only</i> section below</li>
-                     </ul>
-                  </div>
-                  </br>
-                  </br>
-                  <h2>Demo Only </h2>
-                  <div class="myText">
-                     Although this site is designed to upload data (as csv files), I have disabled this function and it can only be used in demo mode.
-                     </br>
-                     </br>
-                     Demo mode allows me to ensure that the concept is showcased without the site crashing.  This allows me to demonstrate the concept and move onto another project for my profile.
-                     </br>
-                     </br>
-                     If this were to be used in a real-world setting, then certain issues would need to be addressed.  They are not insurmountable, but do require coding time that I would prefer to put to another project.  The following issues are some examples:
-                     <ul>
-                        <li>NaNs</li>
-                        <li>Multiple headers</li>
-                        <li>ASCII encodings</li>
-                        <li>Large file sizes</li>
-                        <li>Non-csv files</li>
-                     </ul>
-                     Instead, it is an exploration of how some aspects of a data scientist's work can be shared with other teams. And above all, a project to showcase my unique skillset of data science, web dev and business.</small></p>
-                  </div>
-                  </br>
-                  <h2>Motivation </h2>
-                  <div class="myText">
-                     It is a reflection of how I combine the following skills:
-                     <ul>
-                        <li>Data Science - applying machine learning algorithms to business problems</li>
-                        <li>Web Development - presenting data and creating an interface for analytical tools </li>
-                        <li>Business Management - data-driven approaches to sales/marketing/finance/operations</li>
-                     </ul>
-                     Click on the LinkedIn logo below to learn more about how I combine a range of tech and business skills with startups.
-                  </div>
-               </div>
-            </div>
-            <div class="">
-               <div id="jumbo" class="jumbotron" style="overflow-x:scroll; overflow-y:scroll; white-space: nowrap;">
-                  <h2>Stack and Technologies </h2>
-                  <div class="myText">
-                     Frontend:
-                     <ul>
-                        <li>JavaScript</li>
-                        <li>JQuery</li>
-                        <li>Bootstrap</li>
-                        <li>HTML</li>
-                        <li>CSS</li>
-                     </ul>
-                     Backend:
-                     <ul>
-                        <li>Python</li>
-                        <li>Flask</li>
-                        <li>Jinja2</li>
-                        <li>AWS (EC2, 53 Route)</li>
-                     </ul>
-                     Model building and data-visualizations:
-                     <ul>
-                        <li>Numpy</li>
-                        <li>Pandas</li>
-                        <li>Matplotlib</li>
-                        <li>SK-Learn</li>
-                        <li>StatsModels</li>
-                     </ul>
-                     </br>
-                     Click on the GitHub logo below to explore the code.
-                  </div>
-               </div>
-            </div>
+      </div>
+      </br>
+      </br>
+      <div class="row">
+         <div class="col-12">
+            <h3 class="card-title">Demonstration Mode</h3>
+            <h5 class="card-text">The upload function has been disabled.  Please use the preloaded sample resumes by clicking on the photos below.</h5>
+            </br>
+            </br>
          </div>
       </div>
    </div>
-</div>
-</div>
-<footer class="footer">
-   <div class="container" align="center">
-      <a href="https://github.com/howardvickers/resume-match" class="btn btn-social-icon btn-github btn-small"><i class="fa fa-github fa-3x"></i></a>
-      <a href="https://linkedin.com/in/howardvickers/" class="btn btn-social-icon btn-linkedin btn-small"><i class="fa fa-linkedin fa-3x"></i></a>
-      </p>
+
+
+   <div class="container">
+      <div class="row">
+
+
+         <div class="col-md-3">
+            <div class="card" style="width: 18rem;">
+
+
+               <img onclick="clearResumeText(); clearResumePred(); sendData({'sel_res_dropdown': 'web'})" id="web_dev_img" class="card-img-top" src="../static/img/web_developer.jpg" alt="Card image cap">
+               <div class="card-body">
+                  <h5 class="card-title text-center">Web Developer</h5>
+               </div>
+            </div>
+         </div>
+         <div class="col-md-3">
+            <div class="card" style="width: 18rem;">
+               <img onclick="clearResumeText(); clearResumePred(); sendData({'sel_res_dropdown': 'dta'})" id="data_scientist_img" class="card-img-top" src="../static/img/data_scientist.jpg" alt="Card image cap">
+               <div class="card-body">
+                  <h5 class="card-title text-center">Data Scientist</h5>
+               </div>
+            </div>
+         </div>
+         <div class="col-md-3">
+            <div class="card" style="width: 18rem;">
+               <img onclick="clearResumeText(); clearResumePred(); sendData({'sel_res_dropdown': 'sls'})" id="sales_manager_img" class="card-img-top" src="../static/img/sales_manager.jpg" alt="Card image cap">
+               <div class="card-body">
+                  <h5 class="card-title text-center">Sales Manager</h5>
+               </div>
+            </div>
+         </div>
+         <div class="col-md-3">
+            <div class="card" style="width: 18rem;">
+               <img onclick="clearResumeText(); clearResumePred(); sendData({'sel_res_dropdown': 'act'})" id="accountant_img" class="card-img-top" src="../static/img/accountant.jpg" alt="Card image cap">
+               <div class="card-body">
+                  <h5 class="card-title text-center">Accountant</h5>
+               </div>
+            </div>
+         </div>
+         </br></br>
+      </div>
    </div>
-</footer>
+   </br>
+   </br>
+   <div class="container">
+      <div class="row">
+         <div class="col-12">
+            <h3 class="card-title">Special title treatment</h3>
+            <p class="card-text">With supporting text below as a natural lead-in to additional content.</p>
+         </div>
+      </div>
+      </br>
+      </br>
+      <div class="row">
+         <div class="col-8">
+            <div class="card">
+               <h5 class="card-header">Resume Text: </h5>
+               <div id="resume_text" class="card-body">
+               </div>
+            </div>
+            </br>
+            </br>
+            </br>
+         </div>
+         <div class="col-3">
+            <div class="card">
+               <h5 class="card-header">Classification: </h5>
+               <div id="resume_prediction" class="card-body">
+               </div>
+            </div>
+            </br>
+            </br>
+            </br>
+         </div>
+      </div>
+      <div class="row">
+         <div class="col-12">
+            <h3 class="card-title">Special title treatment</h3>
+            <p class="card-text">With supporting text below as a natural lead-in to additional content.</p>
+            </br>
+            </br>
+            </br>
+         </div>
+      </div>
+   </div>
+   <div class="container">
+      <div>
+         <footer class="footer">
+            <div class="container" align="center">
+               <a href="https://github.com/howardvickers/resume-match" class="btn btn-social-icon btn-github btn-small"><i class="fa fa-github fa-3x"></i></a>
+               <a href="https://linkedin.com/in/howardvickers/" class="btn btn-social-icon btn-linkedin btn-small"><i class="fa fa-linkedin fa-3x"></i></a>
+               </p>
+            </div>
+         </footer>
+      </div>
+   </div>
+   <!-- /container -->
+   <!-- Bootstrap core JavaScript
+      ================================================== -->
+   <!-- Placed at the end of the document so the pages load faster -->
+   <script src="https://code.jquery.com/jquery-3.1.1.slim.min.js" integrity="sha384-A7FZj7v+d/sdmMqp/nOQwliLvUsJfDHW+k9Omg/a/EheAdgtzNs3hpfag6Ed950n" crossorigin="anonymous"></script>
+   <script>window.jQuery || document.write('<script src="../../assets/js/vendor/jquery.min.js"><\/script>')</script>
+   <script src="https://cdnjs.cloudflare.com/ajax/libs/tether/1.4.0/js/tether.min.js" integrity="sha384-DztdAPBWPRXSA/3eYEEUWrWCy7G5KFbe8fFjk5JAIxUYHKkDx6Qin1DkWx51bBrb" crossorigin="anonymous"></script>
+   <!-- <script src="../static/css/bootstrap.min.js"></script> -->
+   <!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
+   <!-- <script src="../../assets/js/ie10-viewport-bug-workaround.js"></script> -->
+</body>
 {% endblock %}
 {% block scripts %}
 {{super()}}
