@@ -20,9 +20,7 @@
    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
    <link href="https://gitcdn.github.io/bootstrap-toggle/2.2.2/css/bootstrap-toggle.min.css" rel="stylesheet">
    <script src="https://gitcdn.github.io/bootstrap-toggle/2.2.2/js/bootstrap-toggle.min.js"></script>
-
-
-<script>
+   <script>
       function clearResumeText() {
       var x = document.getElementById("resume_text");
       if (x.innerHTML === " ") {
@@ -31,7 +29,6 @@
        x.innerHTML = " ";
       }
       }
-
       function clearResumePred() {
       var x = document.getElementById("resume_prediction");
       if (x.innerHTML === " ") {
@@ -40,8 +37,7 @@
       x.innerHTML = " ";
       }
       }
-
-      function sendData(data) {
+      function chooseDemoResume(data) {
         console.log('data: ', data);
           $.ajax({
             type : 'POST',
@@ -50,17 +46,14 @@
             success: function(d){
               $("#resume_text").html(d.resume_text);
               $("#resume_prediction").html(d.resume_prediction);
-
               console.log('d.resume_text: ', d.resume_text);
               console.log('d.resume_prediction: ', d.resume_prediction);
               console.log('demo started');
           }
         })
       }
-
-
          $(document).ready(function(){
-             $("#button").click(function(e){
+             $("#btn_upload").click(function(e){
                console.log("click!")
                e.preventDefault();
                  $.ajax({
@@ -72,52 +65,46 @@
                    contentType: false,
                    success: function(d){
                      $("#resume_text").html(d.resume_text);
+                     $("#resume_prediction").html(d.resume_prediction);
                    }
                });
              });
          });
-
-
-
-
-
-
-
-         $(document).ready(function(){
-           $("#sel_res_btn").click(function(e){
-             e.preventDefault();
-             var chosen_resume = $( "#sel_res_id" ).serializeArray();
-             console.log('str:', chosen_resume );
-                 $.ajax({
-                   type : 'POST',
-                   data: chosen_resume,
-                   url : '/demo_resumes',
-                   success: function(d){
-                     $("#resume_text").html(d.resume_text);
-                     console.log('d.resume_text: ', d.resume_text);
-                     console.log('demo started');
-                 }
-               })
-             });
-         });
-         $(document).ready(function(){
-
-             $("#res_pred_btn").click(function(e){
-               console.log("res_pred_btn clicked!");
-                 e.preventDefault();
-                 $.ajax({
-                   type : 'GET',
-                   url : '/predict',
-                   success: function(data){
-                     console.log('the data:',  data)
-                     $("#resume_prediction").html(data.resume_prediction);
-                 }
-               })
-             });
-         });
-         $(function () {
-            $('[data-toggle="popover"]').popover()
-            })
+         // $(document).ready(function(){
+         //   $("#sel_res_btn").click(function(e){
+         //     e.preventDefault();
+         //     var chosen_resume = $( "#sel_res_id" ).serializeArray();
+         //     console.log('str:', chosen_resume );
+         //         $.ajax({
+         //           type : 'POST',
+         //           data: chosen_resume,
+         //           url : '/demo_resumes',
+         //           success: function(d){
+         //             $("#resume_text").html(d.resume_text);
+         //             console.log('d.resume_text: ', d.resume_text);
+         //             console.log('demo started');
+         //         }
+         //       })
+         //     });
+         // });
+         // $(document).ready(function(){
+         //
+         //     $("#res_pred_btn").click(function(e){
+         //       console.log("res_pred_btn clicked!");
+         //         e.preventDefault();
+         //         $.ajax({
+         //           type : 'GET',
+         //           url : '/predict',
+         //           success: function(data){
+         //             console.log('the data:',  data)
+         //             $("#resume_prediction").html(data.resume_prediction);
+         //         }
+         //       })
+         //     });
+         // });
+         // $(function () {
+         //    $('[data-toggle="popover"]').popover()
+         //    })
    </script>
 </head>
 {% endblock %}
@@ -137,7 +124,7 @@
       <div class="row">
          <div class="col-12">
             <h3 class="card-title">Upload Your Resume</h3>
-            <form id="upload" name="form_upload" enctype="multipart/form-data" method="post" action="/uploadcsv">
+            <form id="upload" name="form_upload" enctype="multipart/form-data" method="post" action="/upload_resume">
                <div class="col">
                   <input type="file" name="data_file">
                   <button id="btn_upload" type="submit" class="btn btn-lg btn-primary" disabled >Upload</button>
@@ -158,41 +145,35 @@
          </div>
       </div>
    </div>
-
-
    <div class="container">
       <div class="row">
-
-
          <div class="col-md-3">
-            <div class="card" style="width: 18rem;">
-
-
-               <img onclick="clearResumeText(); clearResumePred(); sendData({'sel_res_dropdown': 'web'})" id="web_dev_img" class="card-img-top" src="../static/img/web_developer.jpg" alt="Card image cap">
+            <div class="card">
+               <img onclick="clearResumeText(); clearResumePred(); chooseDemoResume({'chosen_demo_resume': 'web'})" id="web_dev_img" class="card-img-top" src="../static/img/web_developer.jpg" alt="Card image cap">
                <div class="card-body">
                   <h5 class="card-title text-center">Web Developer</h5>
                </div>
             </div>
          </div>
          <div class="col-md-3">
-            <div class="card" style="width: 18rem;">
-               <img onclick="clearResumeText(); clearResumePred(); sendData({'sel_res_dropdown': 'dta'})" id="data_scientist_img" class="card-img-top" src="../static/img/data_scientist.jpg" alt="Card image cap">
+            <div class="card">
+               <img onclick="clearResumeText(); clearResumePred(); chooseDemoResume({'chosen_demo_resume': 'dta'})" id="data_scientist_img" class="card-img-top" src="../static/img/data_scientist.jpg" alt="Card image cap">
                <div class="card-body">
                   <h5 class="card-title text-center">Data Scientist</h5>
                </div>
             </div>
          </div>
          <div class="col-md-3">
-            <div class="card" style="width: 18rem;">
-               <img onclick="clearResumeText(); clearResumePred(); sendData({'sel_res_dropdown': 'sls'})" id="sales_manager_img" class="card-img-top" src="../static/img/sales_manager.jpg" alt="Card image cap">
+            <div class="card">
+               <img onclick="clearResumeText(); clearResumePred(); chooseDemoResume({'chosen_demo_resume': 'sls'})" id="sales_manager_img" class="card-img-top" src="../static/img/sales_manager.jpg" alt="Card image cap">
                <div class="card-body">
                   <h5 class="card-title text-center">Sales Manager</h5>
                </div>
             </div>
          </div>
          <div class="col-md-3">
-            <div class="card" style="width: 18rem;">
-               <img onclick="clearResumeText(); clearResumePred(); sendData({'sel_res_dropdown': 'act'})" id="accountant_img" class="card-img-top" src="../static/img/accountant.jpg" alt="Card image cap">
+            <div class="card" >
+               <img onclick="clearResumeText(); clearResumePred(); chooseDemoResume({'chosen_demo_resume': 'act'})" id="accountant_img" class="card-img-top" src="../static/img/accountant.jpg" alt="Card image cap">
                <div class="card-body">
                   <h5 class="card-title text-center">Accountant</h5>
                </div>
@@ -200,20 +181,19 @@
          </div>
          </br></br>
       </div>
-   </div>
-   </br>
-   </br>
-   <div class="container">
+      </br>
+      </br>
       <div class="row">
          <div class="col-12">
-            <h3 class="card-title">Special title treatment</h3>
-            <p class="card-text">With supporting text below as a natural lead-in to additional content.</p>
+            <h3 class="card-title">How it Works</h3>
+            <h5 class="card-text">Clicking on one of the above photos uploads a sample resume as a PDF, then passes it through optical character recognition and displays the text below.  </h5>
+            <h5 class="card-text">The text is then passed into the machine learning algorithm, which classifies the resume according to its content and shows the classification in the below box.</h5>
          </div>
       </div>
       </br>
       </br>
       <div class="row">
-         <div class="col-8">
+         <div class="col-9">
             <div class="card">
                <h5 class="card-header">Resume Text: </h5>
                <div id="resume_text" class="card-body">
@@ -236,8 +216,8 @@
       </div>
       <div class="row">
          <div class="col-12">
-            <h3 class="card-title">Special title treatment</h3>
-            <p class="card-text">With supporting text below as a natural lead-in to additional content.</p>
+            <h3 class="card-title">Under the Hood</h3>
+            <p class="card-text">Details here about the algorithm.</p>
             </br>
             </br>
             </br>
@@ -255,16 +235,9 @@
          </footer>
       </div>
    </div>
-   <!-- /container -->
-   <!-- Bootstrap core JavaScript
-      ================================================== -->
-   <!-- Placed at the end of the document so the pages load faster -->
+   <!-- Bootstrap core JavaScript placed at end of document so pages load faster -->
    <script src="https://code.jquery.com/jquery-3.1.1.slim.min.js" integrity="sha384-A7FZj7v+d/sdmMqp/nOQwliLvUsJfDHW+k9Omg/a/EheAdgtzNs3hpfag6Ed950n" crossorigin="anonymous"></script>
-   <script>window.jQuery || document.write('<script src="../../assets/js/vendor/jquery.min.js"><\/script>')</script>
    <script src="https://cdnjs.cloudflare.com/ajax/libs/tether/1.4.0/js/tether.min.js" integrity="sha384-DztdAPBWPRXSA/3eYEEUWrWCy7G5KFbe8fFjk5JAIxUYHKkDx6Qin1DkWx51bBrb" crossorigin="anonymous"></script>
-   <!-- <script src="../static/css/bootstrap.min.js"></script> -->
-   <!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
-   <!-- <script src="../../assets/js/ie10-viewport-bug-workaround.js"></script> -->
 </body>
 {% endblock %}
 {% block scripts %}

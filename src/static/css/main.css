@@ -66,6 +66,11 @@ transform: scale(.8);
 
 }
 
+.card {
+  padding-left: 0px;
+  padding-right: 0px;
+}
+
 #jumbo {
   padding-top: 20px;
   padding-left: 40px;
