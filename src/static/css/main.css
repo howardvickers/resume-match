@@ -12,6 +12,42 @@ transition: all 0.3s;
 transform: scale(.8);
 }
 
+#divLoading
+{
+    display : none;
+}
+#ldg
+{
+    display : block;
+    position : fixed;
+    z-index: 100;
+    background-image : url('http://loadinggif.com/images/image-selection/3.gif');
+    background-color:#666;
+    opacity : 0.4;
+    background-repeat : no-repeat;
+    background-position : center;
+    left : 0;
+    bottom : 0;
+    right : 0;
+    top : 0;
+}
+#loadinggif.show
+{
+    left : 50%;
+    top : 50%;
+    position : absolute;
+    z-index : 101;
+    width : 32px;
+    height : 32px;
+    margin-left : -16px;
+    margin-top : -16px;
+}
+div.content {
+   width : 1000px;
+   height : 1000px;
+}
+
+
 .loader {
     border: 16px solid #f3f3f3; /* Light grey */
     border-top: 16px solid #3498db; /* Blue */
@@ -61,11 +97,18 @@ transform: scale(.8);
   font-size: medium;
 }
 
-.jumbotron .container
-{
-
+.jumbotron .container {
 }
 
+.page-header-text {
+  color: white;
+	/* position: relative; */
+  /* vertical-align: bottom; */
+  position: absolute;
+  bottom: 300px;
+	/* padding-bottom: 10px; */
+
+}
 .card {
   padding-left: 0px;
   padding-right: 0px;

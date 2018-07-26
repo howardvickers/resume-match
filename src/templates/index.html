@@ -29,6 +29,15 @@
        x.innerHTML = " ";
       }
       }
+
+
+      function startLoading(){
+        $('#ldg').show()
+      }
+      function stopLoading(){
+        $('#ldg').hide()
+      }
+
       function clearResumePred() {
       var x = document.getElementById("resume_prediction");
       if (x.innerHTML === " ") {
@@ -44,6 +53,7 @@
             data: data,
             url : '/demo_resumes',
             success: function(d){
+              stopLoading();
               $("#resume_text").html(d.resume_text);
               $("#resume_prediction").html(d.resume_prediction);
               console.log('d.resume_text: ', d.resume_text);
@@ -64,55 +74,21 @@
                    processData: false,
                    contentType: false,
                    success: function(d){
+                     ajaxStop();
                      $("#resume_text").html(d.resume_text);
                      $("#resume_prediction").html(d.resume_prediction);
                    }
                });
              });
          });
-         // $(document).ready(function(){
-         //   $("#sel_res_btn").click(function(e){
-         //     e.preventDefault();
-         //     var chosen_resume = $( "#sel_res_id" ).serializeArray();
-         //     console.log('str:', chosen_resume );
-         //         $.ajax({
-         //           type : 'POST',
-         //           data: chosen_resume,
-         //           url : '/demo_resumes',
-         //           success: function(d){
-         //             $("#resume_text").html(d.resume_text);
-         //             console.log('d.resume_text: ', d.resume_text);
-         //             console.log('demo started');
-         //         }
-         //       })
-         //     });
-         // });
-         // $(document).ready(function(){
-         //
-         //     $("#res_pred_btn").click(function(e){
-         //       console.log("res_pred_btn clicked!");
-         //         e.preventDefault();
-         //         $.ajax({
-         //           type : 'GET',
-         //           url : '/predict',
-         //           success: function(data){
-         //             console.log('the data:',  data)
-         //             $("#resume_prediction").html(data.resume_prediction);
-         //         }
-         //       })
-         //     });
-         // });
-         // $(function () {
-         //    $('[data-toggle="popover"]').popover()
-         //    })
    </script>
 </head>
 {% endblock %}
 {% block content %}
-<body>
+<body onload="stopLoading()">
    <div class="jumbotron backgroundIm">
-      <div>
-      </div>
+ <div class=" ">
+ </div>
    </div>
    <div class="container">
       <h1 class="display-3 text-center">Get matched with the perfect job!</h1>
@@ -149,7 +125,7 @@
       <div class="row">
          <div class="col-md-3">
             <div class="card">
-               <img onclick="clearResumeText(); clearResumePred(); chooseDemoResume({'chosen_demo_resume': 'web'})" id="web_dev_img" class="card-img-top" src="../static/img/web_developer.jpg" alt="Card image cap">
+               <img onclick="clearResumeText(); clearResumePred(); startLoading(); chooseDemoResume({'chosen_demo_resume': 'web'})" id="web_dev_img" class="card-img-top" src="../static/img/web_developer.jpg" alt="Card image cap">
                <div class="card-body">
                   <h5 class="card-title text-center">Web Developer</h5>
                </div>
@@ -157,7 +133,7 @@
          </div>
          <div class="col-md-3">
             <div class="card">
-               <img onclick="clearResumeText(); clearResumePred(); chooseDemoResume({'chosen_demo_resume': 'dta'})" id="data_scientist_img" class="card-img-top" src="../static/img/data_scientist.jpg" alt="Card image cap">
+               <img onclick="clearResumeText(); clearResumePred(); startLoading(); chooseDemoResume({'chosen_demo_resume': 'dta'})" id="data_scientist_img" class="card-img-top" src="../static/img/data_scientist.jpg" alt="Card image cap">
                <div class="card-body">
                   <h5 class="card-title text-center">Data Scientist</h5>
                </div>
@@ -165,7 +141,7 @@
          </div>
          <div class="col-md-3">
             <div class="card">
-               <img onclick="clearResumeText(); clearResumePred(); chooseDemoResume({'chosen_demo_resume': 'sls'})" id="sales_manager_img" class="card-img-top" src="../static/img/sales_manager.jpg" alt="Card image cap">
+               <img onclick="clearResumeText(); clearResumePred(); startLoading(); chooseDemoResume({'chosen_demo_resume': 'sls'})" id="sales_manager_img" class="card-img-top" src="../static/img/sales_manager.jpg" alt="Card image cap">
                <div class="card-body">
                   <h5 class="card-title text-center">Sales Manager</h5>
                </div>
@@ -173,7 +149,7 @@
          </div>
          <div class="col-md-3">
             <div class="card" >
-               <img onclick="clearResumeText(); clearResumePred(); chooseDemoResume({'chosen_demo_resume': 'act'})" id="accountant_img" class="card-img-top" src="../static/img/accountant.jpg" alt="Card image cap">
+               <img onclick="clearResumeText(); clearResumePred(); startLoading(); chooseDemoResume({'chosen_demo_resume': 'act'})" id="accountant_img" class="card-img-top" src="../static/img/accountant.jpg" alt="Card image cap">
                <div class="card-body">
                   <h5 class="card-title text-center">Accountant</h5>
                </div>
@@ -187,7 +163,10 @@
          <div class="col-12">
             <h3 class="card-title">How it Works</h3>
             <h5 class="card-text">Clicking on one of the above photos uploads a sample resume as a PDF, then passes it through optical character recognition and displays the text below.  </h5>
-            <h5 class="card-text">The text is then passed into the machine learning algorithm, which classifies the resume according to its content and shows the classification in the below box.</h5>
+          </br>
+          <h5 class="card-text">The text is then passed into the machine learning algorithm, which classifies the resume according to its content and shows the classification in the below box.</h5>
+         </div>
+         <div id="ldg">
          </div>
       </div>
       </br>
@@ -197,6 +176,7 @@
             <div class="card">
                <h5 class="card-header">Resume Text: </h5>
                <div id="resume_text" class="card-body">
+
                </div>
             </div>
             </br>
