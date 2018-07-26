@@ -72,6 +72,7 @@ def predict_resume(resume_text):
     return prediction[0]
 
 def build_resume_html(resume):
+    print('raw resume: ', resume)
     resume = resume.replace('\n', '<br />')
     return resume
 
